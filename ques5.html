@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Country Search</title>
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 p-10 flex flex-col items-center">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-xl font-bold mb-4">Country Finder</h1>
+        <div class="flex gap-2">
+            <input id="countryInput" type="text" placeholder="Enter country name..." class="border p-2 flex-grow rounded">
+            <button onclick="searchCountry()" class="bg-blue-600 text-white px-4 py-2 rounded">Search</button>
+        </div>
+        <div id="result" class="mt-6"></div>
+    </div>
+
+    <script>
+        async function searchCountry() {
+            const name = document.getElementById('countryInput').value.trim();
+            const resultDiv = document.getElementById('result');
+            if (!name) return;
+
+            resultDiv.innerHTML = "<p class='text-gray-500'>Searching...</p>";
+
+            try {
+                const res = await fetch(`https://restcountries.com{name}`);
+                if (!res.ok) throw new Error("Country not found");
+                const [data] = await res.json();
+
+                resultDiv.innerHTML = `
+                    <div class="border-t pt-4">
+                        <h2 class="text-2xl font-bold">${data.name.common}</h2>
+                        <p><b>Capital:</b> ${data.capital?.[0] || 'N/A'}</p>
+                        <p><b>Population:</b> ${data.population.toLocaleString()}</p>
+                    </div>
+                `;
+            } catch (err) {
+                resultDiv.innerHTML = `<p class="text-red-600 font-bold">${err.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

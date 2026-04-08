@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Filter</title>
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="p-10">
+    <h1 class="text-2xl font-bold mb-4">Filter Posts by User</h1>
+    <div id="buttons" class="flex gap-2 mb-6">
+        <!-- Buttons 1-5 -->
+    </div>
+    <div id="posts" class="space-y-2"></div>
+
+    <script>
+        const btnContainer = document.getElementById('buttons');
+        const postContainer = document.getElementById('posts');
+
+        for (let i = 1; i <= 5; i++) {
+            const btn = document.createElement('button');
+            btn.innerText = `User ${i}`;
+            btn.className = "filter-btn bg-gray-200 px-4 py-2 rounded transition";
+            btn.onclick = () => fetchUserPosts(i, btn);
+            btnContainer.appendChild(btn);
+        }
+
+        async function fetchUserPosts(userId, clickedBtn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.className = "filter-btn bg-gray-200 px-4 py-2 rounded");
+            clickedBtn.className = "filter-btn bg-blue-600 text-white px-4 py-2 rounded";
+            
+            postContainer.innerHTML = "Loading posts...";
+            const res = await fetch(`https://typicode.com{userId}`);
+            const data = await res.json();
+            
+            postContainer.innerHTML = data.map(post => `
+                <div class="p-3 bg-white border rounded shadow-sm">${post.title}</div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

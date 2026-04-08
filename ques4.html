@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exercise 4 - Error Handling</title>
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8 flex flex-col items-center">
+
+    <h1 class="text-2xl font-bold mb-6">Error Handling Practice</h1>
+
+    <!-- Display Area -->
+    <div id="output" class="w-full max-w-md p-4 rounded-md">
+        <!-- Post content or error message will appear here -->
+        <p class="text-gray-500 italic">Attempting to fetch data...</p>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+
+        // Function to display a red error box
+        function showError(message) {
+            output.innerHTML = `
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Oops!</strong>
+                    <span class="block sm:inline">${message}</span>
+                </div>
+            `;
+        }
+
+        // SCENARIO 1: ID 9999 (Valid URL, but data doesn't exist - 404)
+        fetch('https://typicode.com')
+            .then(response => {
+                // response.ok is true if status is 200-299
+                if (!response.ok) {
+                    // This triggers the error state for 404, 500, etc.
+                    throw new Error(`Post not found (Status: ${response.status})`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                output.innerHTML = `<h2 class="font-bold">${data.title}</h2>`;
+            })
+            .catch(error => {
+                // SCENARIO 2: Broken URL or Network failure
+                // The .catch() handles both the "throw" above AND complete network crashes
+                console.error("Catch block triggered:", error.message);
+                showError(error.message);
+            });
+
+        /* 
+        TESTING TIP: 
+        To see a "Network Error", change the URL to something like 
+        'https://broken-url-that-does-not-exist.abc' 
+        */
+    </script>
+</body>
+</html>

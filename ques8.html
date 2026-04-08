@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cat Gallery</title>
+    <script src="https://tailwindcss.com"></script>
+</head>
+<body class="p-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold">Cat Gallery</h1>
+        <button onclick="loadCats()" class="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800">Refresh Cats 🐾</button>
+    </div>
+    <div id="gallery" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+
+    <script>
+        async function loadCats() {
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = "Loading...";
+            const res = await fetch('https://thecatapi.com');
+            const data = await res.json();
+            gallery.innerHTML = data.map(cat => `
+                <img src="${cat.url}" class="w-full h-48 object-cover rounded-lg shadow-md hover:scale-105 transition">
+            `).join('');
+        }
+        loadCats();
+    </script>
+</body>
+</html>
